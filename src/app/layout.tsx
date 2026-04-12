@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import FaviconForce from "@/components/FaviconForce";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -51,7 +52,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <FaviconForce />
+        {children}
+      </body>
     </html>
   );
 }
