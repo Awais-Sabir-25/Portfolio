@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { education, experiences, profile, sections, skillGroups } from "@/data/portfolio";
+import { education, experiences, profile, sasoLinks, sasoLinksNote, sections, skillGroups } from "@/data/portfolio";
 import { goTo } from "@/lib/ui";
 
 type Kind = "cmd" | "out" | "ok" | "err" | "accent" | "head" | "blank";
@@ -71,6 +71,8 @@ function execute(raw: string): Line[] | null {
       return [
         head("SASO-Maneh"),
         out("  Enterprise platform in Saudi Arabia. Leading the migration of 1,600+ requests and 2,000+ users off the legacy Jeem system."),
+        ...sasoLinks.map((l) => out(`  ${l.url}${l.restricted ? " *" : ""}`)),
+        out(`  * ${sasoLinksNote}`),
         head("Vantage Board"),
         out("  AI productivity dashboard unifying JIRA, Gmail and Outlook, with AI classification and AI-drafted replies."),
         blank,

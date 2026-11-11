@@ -1,5 +1,6 @@
 "use client";
 
+import { sasoLinks, sasoLinksNote } from "@/data/portfolio";
 import { spotlight } from "@/lib/ui";
 import PipelineDemo from "./PipelineDemo";
 import { Reveal, SectionHead } from "./Reveal";
@@ -57,6 +58,23 @@ export default function Projects() {
                 <li>Deployed onsite as 1 of 3 engineers, resolving production issues directly with the client.</li>
               </ul>
               <Chips items={[".NET", "Angular", "Camunda 8", "Zeebe .NET Client", "RabbitMQ"]} />
+              <div className="project-links">
+                {sasoLinks.map((link) => (
+                  <a
+                    key={link.url}
+                    className="btn btn-ghost btn-sm"
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open ${link.label} (${link.display})${link.restricted ? ", Saudi Arabia only" : ""}`}
+                  >
+                    {link.display}
+                    {link.restricted && <span aria-hidden>*</span>}
+                    <span aria-hidden>↗</span>
+                  </a>
+                ))}
+              </div>
+              <p className="project-links-note">* {sasoLinksNote}</p>
             </div>
             <PipelineDemo />
           </article>

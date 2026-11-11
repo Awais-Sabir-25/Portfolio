@@ -18,6 +18,13 @@ export const profile = {
     "Senior Software Engineer with 3+ years building enterprise full-stack applications in .NET and Angular, now working as an AI Full Stack Engineer and Forward Deployed Engineer. Leading the SASO-Maneh migration (1,600+ requests, 2,000+ users) in Saudi Arabia and building Vantage Board, an AI productivity product.",
 };
 
+export const sasoLinks = [
+  { label: "Maneh", url: "https://maneh.saso.gov.sa", display: "maneh.saso.gov.sa", restricted: false },
+  { label: "HERC", url: "https://herc.saso.gov.sa", display: "herc.saso.gov.sa", restricted: true },
+];
+
+export const sasoLinksNote = "HERC is not publicly accessible outside Saudi Arabia.";
+
 export const roles = [
   "Senior Software Engineer",
   "AI Full Stack Engineer",

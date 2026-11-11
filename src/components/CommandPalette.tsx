@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { profile, sections } from "@/data/portfolio";
+import { profile, sasoLinks, sections } from "@/data/portfolio";
 import { copyText, goTo } from "@/lib/ui";
 
 type Command = { group: string; label: string; hint?: string; run: () => void };
@@ -39,6 +39,12 @@ const commands: Command[] = [
     hint: "↓",
     run: () => window.open(profile.cv, "_blank", "noopener,noreferrer"),
   },
+  ...sasoLinks.map((l) => ({
+    group: "Actions",
+    label: `Open ${l.label}${l.restricted ? " (Saudi Arabia only)" : ""}`,
+    hint: l.display,
+    run: () => window.open(l.url, "_blank", "noopener,noreferrer"),
+  })),
   {
     group: "Actions",
     label: "Copy phone number",

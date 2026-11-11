@@ -807,6 +807,25 @@ kbd {
   color: var(--text-muted);
 }
 
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.project-links .btn {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+
+.project-links-note {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
 .chip-row {
   display: flex;
   flex-wrap: wrap;
