@@ -10,16 +10,16 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Awais Sabir — Software Engineer II",
+  title: "Awais Sabir — AI Full Stack Software Engineer",
   description:
-    "Full-Stack Software Engineer II specializing in .NET, Angular, and MERN Stack. Expert in enterprise backend systems, workflow automation with Camunda 8, and scalable API design.",
+    "Senior Software Engineer, AI Full Stack Engineer and Forward Deployed Engineer. 3+ years building enterprise platforms in .NET and Angular, workflow automation with Camunda 8 and RabbitMQ, and AI products.",
   keywords: [
     "Awais Sabir",
-    "Software Engineer",
-    "Full Stack Developer",
+    "Senior Software Engineer",
+    "AI Full Stack Engineer",
+    "Forward Deployed Engineer",
     ".NET",
     "Angular",
-    "React",
     "TypeScript",
     "Camunda 8",
     "RabbitMQ",

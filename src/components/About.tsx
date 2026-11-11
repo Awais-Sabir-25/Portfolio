@@ -1,304 +1,131 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, type MouseEvent } from "react";
+import { animate, useInView } from "framer-motion";
+import { education, profile, stats, type Stat } from "@/data/portfolio";
+import { spotlight } from "@/lib/ui";
+import { Reveal, SectionHead } from "./Reveal";
 
-const stats = [
-  { value: 2, suffix: "+", label: "Years Experience", icon: "📅" },
-  { value: 100, suffix: "+", label: "APIs Built", icon: "⚡" },
-  { value: 8, suffix: "", label: "Engineers Led", icon: "👥" },
-  { value: 3, suffix: "+", label: "Major Releases", icon: "🚀" },
-];
-
-function Counter({ target, suffix }: { target: number; suffix: string }) {
-  const [count, setCount] = useState(0);
+function Counter({ value }: { value: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
 
   useEffect(() => {
     if (!inView) return;
-    const duration = 1500;
-    const startTime = Date.now();
-    const timer = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(eased * target));
-      if (progress === 1) clearInterval(timer);
-    }, 16);
-    return () => clearInterval(timer);
-  }, [inView, target]);
+    const controls = animate(0, value, {
+      duration: 1.4,
+      ease: "easeOut",
+      onUpdate: (v) => {
+        if (ref.current) ref.current.textContent = Math.round(v).toLocaleString("en-US");
+      },
+    });
+    return () => controls.stop();
+  }, [inView, value]);
+
+  return <span ref={ref}>{value.toLocaleString("en-US")}</span>;
+}
+
+function StatCard({ stat }: { stat: Stat }) {
+  const onMove = (e: MouseEvent<HTMLDivElement>) => {
+    spotlight(e);
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `rotateX(${(-py * 10).toFixed(2)}deg) rotateY(${(px * 10).toFixed(2)}deg) translateZ(4px)`;
+  };
 
   return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
+    <div
+      className="card stat-card"
+      onMouseMove={onMove}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "";
+      }}
+    >
+      <div className="stat-value gradient-text">
+        {stat.prefix}
+        <Counter value={stat.value} />
+        {stat.suffix}
+      </div>
+      <div className="stat-label">{stat.label}</div>
+      <div className="stat-detail">{stat.detail}</div>
+    </div>
   );
 }
 
+const facts: [string, string][] = [
+  ["location", `"${profile.location}"`],
+  ["role", `"${profile.currentRole} @ ${profile.company}"`],
+  ["focus", '["AI Full Stack", "Forward Deployed"]'],
+  ["stack", '[".NET", "Angular", "Camunda 8", "RabbitMQ"]'],
+  ["languages", '["Urdu", "English"]'],
+];
+
 export default function About() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   return (
-    <section
-      id="about"
-      ref={ref}
-      style={{
-        padding: "120px 0 80px",
-        position: "relative",
-      }}
-    >
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          style={{ marginBottom: "64px" }}
-        >
-          <span className="section-tag">01 / about</span>
-          <h2
-            style={{
-              fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
-              color: "#e2e8f0",
-              marginTop: "12px",
-            }}
-          >
-            Who I Am
-          </h2>
-          <div className="section-line" />
-        </motion.div>
+    <section id="about" className="section">
+      <div className="container">
+        <SectionHead index="01" tag="about" title="Who I Am" />
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.2fr 1fr",
-            gap: "64px",
-            alignItems: "start",
-          }}
-          className="about-grid"
-        >
-          {/* Left — Bio */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <p
-              style={{
-                color: "#94a3b8",
-                lineHeight: 1.85,
-                fontSize: "1.05rem",
-                marginBottom: "24px",
-              }}
-            >
-              I&apos;m a{" "}
-              <span style={{ color: "#e2e8f0", fontWeight: 600 }}>
-                Full-Stack Software Engineer II
-              </span>{" "}
-              with expertise in building enterprise-grade applications. Currently
-              at{" "}
-              <span style={{ color: "#00d4ff" }}>AZM Development</span>, I lead
-              backend architecture and workflow automation for the{" "}
-              <span style={{ color: "#e2e8f0" }}>SASO-Maneh</span> enterprise
-              platform in Saudi Arabia.
+        <div className="about-grid">
+          <Reveal className="about-text">
+            <p>
+              I&apos;m a <strong>Senior Software Engineer</strong> with 3+ years building enterprise
+              full-stack applications in .NET and Angular. Today I work at{" "}
+              <span className="hl">AZM Development</span> as an <strong>AI Full Stack Engineer</strong> and{" "}
+              <strong>Forward Deployed Engineer</strong>.
             </p>
-            <p
-              style={{
-                color: "#64748b",
-                lineHeight: 1.85,
-                fontSize: "1rem",
-                marginBottom: "32px",
-              }}
-            >
-              I specialize in{" "}
-              <span style={{ color: "#94a3b8" }}>
-                .NET backend services, Angular frontends
-              </span>
-              , and{" "}
-              <span style={{ color: "#94a3b8" }}>
-                distributed systems design
-              </span>
-              . I&apos;ve integrated{" "}
-              <span style={{ color: "#7c3aed" }}>Camunda 8 workflows</span> to
-              automate 10+ critical business processes end-to-end, and
-              implemented{" "}
-              <span style={{ color: "#7c3aed" }}>RabbitMQ</span> to decouple
-              services and improve system reliability at scale.
+            <p>
+              On <strong>SASO-Maneh</strong>, a large-scale enterprise platform in Saudi Arabia, I lead the
+              migration workstream, moving 1,600+ requests and 2,000+ users off the legacy Jeem system. I
+              work directly with clients: gathering their queries, resolving issues, and turning what they
+              need into requirements and technical plans the team can build on.
+            </p>
+            <p>
+              Alongside that I&apos;m building <strong>Vantage Board</strong>, an AI productivity product
+              that pulls JIRA, Gmail and Outlook into one actionable view. Before this I delivered 100+
+              production REST APIs, automated 10+ business processes with Camunda 8 and RabbitMQ, and led
+              an 8-engineer feature team.
             </p>
 
-            {/* Education card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              style={{
-                background: "#0f1923",
-                border: "1px solid #1e2d3d",
-                borderRadius: "12px",
-                padding: "20px 24px",
-                display: "flex",
-                gap: "16px",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "10px",
-                  background: "rgba(0, 212, 255, 0.1)",
-                  border: "1px solid rgba(0, 212, 255, 0.2)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.3rem",
-                  flexShrink: 0,
-                }}
-              >
-                🎓
+            <div className="card edu-card" onMouseMove={spotlight}>
+              <div className="edu-icon">
+                <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden>
+                  <path d="M2 9l10-5 10 5-10 5-10-5z" strokeLinejoin="round" />
+                  <path d="M6 11.5V16c0 1.2 2.7 2.5 6 2.5s6-1.3 6-2.5v-4.5M22 9v6" strokeLinecap="round" />
+                </svg>
               </div>
               <div>
-                <div
-                  style={{
-                    color: "#e2e8f0",
-                    fontWeight: 600,
-                    fontSize: "0.95rem",
-                    marginBottom: "3px",
-                  }}
-                >
-                  Bachelors in Computer Science
-                </div>
-                <div style={{ color: "#00d4ff", fontSize: "0.85rem" }}>
-                  FAST-NUCES, Islamabad
-                </div>
-                <div
-                  style={{
-                    color: "#475569",
-                    fontSize: "0.8rem",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    marginTop: "2px",
-                  }}
-                >
-                  Aug 2019 – June 2023
+                <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>{education.degree}</div>
+                <div style={{ color: "var(--accent-cyan)", fontSize: "0.86rem" }}>{education.school}</div>
+                <div className="mono" style={{ color: "var(--text-muted)", fontSize: "0.78rem", marginTop: 2 }}>
+                  {education.period}
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </Reveal>
 
-          {/* Right — Stats */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "16px",
-                marginBottom: "32px",
-              }}
-            >
-              {stats.map((s, i) => (
-                <motion.div
-                  key={s.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={inView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
-                  className="stat-card"
-                >
-                  <div style={{ fontSize: "1.6rem", marginBottom: "8px" }}>
-                    {s.icon}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "2rem",
-                      fontWeight: 800,
-                      letterSpacing: "-0.03em",
-                      background:
-                        "linear-gradient(135deg, #00d4ff, #7c3aed)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    <Counter target={s.value} suffix={s.suffix} />
-                  </div>
-                  <div
-                    style={{
-                      color: "#64748b",
-                      fontSize: "0.82rem",
-                      marginTop: "4px",
-                    }}
-                  >
-                    {s.label}
-                  </div>
-                </motion.div>
+          <Reveal delay={0.1}>
+            <div className="stats-grid">
+              {stats.map((s) => (
+                <StatCard key={s.label} stat={s} />
               ))}
             </div>
 
-            {/* Quick facts */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.7, duration: 0.5 }}
-              style={{
-                background: "#0f1923",
-                border: "1px solid #1e2d3d",
-                borderRadius: "12px",
-                padding: "20px 24px",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "0.8rem",
-                  color: "#475569",
-                  marginBottom: "12px",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                // quick_facts.json
-              </div>
-              {[
-                { key: "location", value: '"Islamabad, Pakistan"' },
-                { key: "current_role", value: '"SE II @ AZM Development"' },
-                { key: "languages", value: '["Urdu", "English"]' },
-                { key: "open_to_remote", value: "true" },
-              ].map((item) => (
-                <div
-                  key={item.key}
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "0.82rem",
-                    marginBottom: "6px",
-                  }}
-                >
-                  <span style={{ color: "#7c3aed" }}>"{item.key}"</span>
-                  <span style={{ color: "#475569" }}>:</span>
-                  <span style={{ color: "#10b981" }}>{item.value}</span>
+            <div className="card facts" onMouseMove={spotlight}>
+              <div style={{ color: "var(--text-muted)" }}>{"// quick_facts.json"}</div>
+              {facts.map(([key, value]) => (
+                <div key={key} style={{ whiteSpace: "nowrap" }}>
+                  <span style={{ color: "var(--accent-violet)" }}>&quot;{key}&quot;</span>
+                  <span style={{ color: "var(--text-muted)" }}>: </span>
+                  <span style={{ color: "var(--accent-green)" }}>{value}</span>
                 </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </Reveal>
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .about-grid {
-            grid-template-columns: 1fr !important;
-            gap: 40px !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
